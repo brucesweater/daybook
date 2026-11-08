@@ -1,0 +1,168 @@
+{
+  "app" : "Daybook",
+  "events" : [
+    {
+      "allDay" : false,
+      "endDay" : "2026-11-05",
+      "endMinutes" : 930,
+      "id" : "9f3c1a52-7b1e-4c9d-8f10-2a6d5e4b3c21",
+      "notes" : "Bring the insurance card",
+      "startDay" : "2026-11-05",
+      "startMinutes" : 870,
+      "title" : "Dentist"
+    },
+    {
+      "allDay" : true,
+      "endDay" : "2026-11-07",
+      "endMinutes" : null,
+      "id" : "ABCDEF12-3456-7890-ABCD-EF1234567890",
+      "notes" : "",
+      "startDay" : "2026-11-07",
+      "startMinutes" : null,
+      "title" : "写作业 ✏️"
+    },
+    {
+      "allDay" : true,
+      "endDay" : "2026-12-02",
+      "endMinutes" : null,
+      "id" : "trip-without-minutes",
+      "notes" : "",
+      "startDay" : "2026-11-27",
+      "startMinutes" : null,
+      "title" : "Road trip"
+    },
+    {
+      "allDay" : false,
+      "endDay" : "2027-01-01",
+      "endMinutes" : 0,
+      "id" : "party-ends-at-midnight",
+      "notes" : "",
+      "startDay" : "2026-12-31",
+      "startMinutes" : 1200,
+      "title" : "Party"
+    },
+    {
+      "allDay" : false,
+      "endDay" : "2026-11-14",
+      "endMinutes" : 60,
+      "id" : "late-show-crosses-midnight",
+      "notes" : "",
+      "startDay" : "2026-11-13",
+      "startMinutes" : 1380,
+      "title" : "Late show"
+    },
+    {
+      "allDay" : false,
+      "endDay" : "2026-11-03",
+      "endMinutes" : 0,
+      "id" : "15323624-cf1e-46c4-bc8a-caeb0f3bedcb",
+      "notes" : "多行\nnotes ✨",
+      "startDay" : "2026-11-02",
+      "startMinutes" : 1200,
+      "title" : "🌃 夜市 Night market"
+    },
+    {
+      "allDay" : true,
+      "endDay" : "2027-01-02",
+      "endMinutes" : null,
+      "id" : "4f4fa37d-be63-49a6-8324-46fbacb69812",
+      "notes" : "",
+      "startDay" : "2026-12-26",
+      "startMinutes" : null,
+      "title" : "Ski week ⛷️ スキー"
+    },
+    {
+      "allDay" : false,
+      "endDay" : "2026-11-02",
+      "endMinutes" : 405,
+      "id" : "bf56b07a-41ff-4857-8358-e9ea82a0bd92",
+      "notes" : "",
+      "startDay" : "2026-11-01",
+      "startMinutes" : 1410,
+      "title" : "Red-eye ✈️"
+    },
+    {
+      "allDay" : false,
+      "endDay" : "2027-03-14",
+      "endMinutes" : 195,
+      "id" : "b7559c4a-2251-4ec3-b3de-83c55893e33b",
+      "notes" : "",
+      "startDay" : "2027-03-14",
+      "startMinutes" : 150,
+      "title" : "DST check 🕑"
+    },
+    {
+      "allDay" : false,
+      "endDay" : "2026-11-11",
+      "endMinutes" : 1050,
+      "id" : "6ab30c8b-1913-4651-a4aa-0879b9eb897e",
+      "notes" : "Room 4B — bring “goggles”",
+      "startDay" : "2026-11-09",
+      "startMinutes" : 540,
+      "title" : "Workshop 🧪 实验"
+    },
+    {
+      "allDay" : false,
+      "endDay" : "2026-11-04",
+      "endMinutes" : 420,
+      "id" : "519ebcb1-a1a7-4ca9-b021-018590038db8",
+      "notes" : "",
+      "startDay" : "2026-11-04",
+      "startMinutes" : 360,
+      "title" : "Sunrise yoga"
+    }
+  ],
+  "exportedAt" : "2026-11-04T13:10:00.000Z",
+  "tasks" : [
+    {
+      "assignedAt" : "2026-10-29T13:00:00.000Z",
+      "completedAt" : null,
+      "id" : "1b7e6c1a-0000-4000-8000-000000000001",
+      "notes" : "Two pages, double spaced",
+      "title" : "Finish the essay"
+    },
+    {
+      "assignedAt" : "2026-09-01T08:15:30.000Z",
+      "completedAt" : null,
+      "id" : "1B7E6C1A-0000-4000-8000-000000000002",
+      "notes" : "",
+      "title" : "Reply to Coach"
+    },
+    {
+      "assignedAt" : "2026-10-20T09:00:00.000Z",
+      "completedAt" : null,
+      "id" : "task-done",
+      "notes" : "",
+      "title" : "Return library books"
+    },
+    {
+      "assignedAt" : "2025-12-30T12:00:00.000Z",
+      "completedAt" : "2025-12-31T12:00:00.000Z",
+      "id" : "01ebccf6-bd4b-49f4-8bb8-f58415e79a09",
+      "notes" : "",
+      "title" : "Old year ✓ 旧年"
+    },
+    {
+      "assignedAt" : "2026-11-01T07:30:00.000Z",
+      "completedAt" : null,
+      "id" : "da2373df-15ba-4af7-97ec-e832eac6df41",
+      "notes" : "每天 15 分钟\nTry 🙂",
+      "title" : "📔 写日记"
+    },
+    {
+      "assignedAt" : "2026-11-02T12:41:08.123Z",
+      "completedAt" : "2026-11-04T13:10:00.000Z",
+      "id" : "32901f24-0847-4276-be21-066fd96a13d3",
+      "notes" : "",
+      "title" : "Pack for 🇯🇵 trip — 東京"
+    },
+    {
+      "assignedAt" : "2026-11-02T12:41:09.123Z",
+      "completedAt" : null,
+      "id" : "d15c19bc-a6b8-4414-908c-892e03c64219",
+      "notes" : "",
+      "title" : "Buy “good” <paper> & pens"
+    }
+  ],
+  "version" : 1
+}

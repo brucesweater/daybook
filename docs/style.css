@@ -1,0 +1,1234 @@
+/* Daybook. Tokens first; they match the iOS app. */
+
+:root {
+  color-scheme: light dark;
+
+  --accent-fill: #E0281D;
+  --accent-text: #E0281D;
+  --label: #1D1D1F;
+  --label-2: #6E6E73;
+  --label-3: #8E8E93;
+  --sep: rgba(0, 0, 0, .08);
+  --bg: #F5F5F7;
+  --card: #FFFFFF;
+  --age-warm: #B25F00;
+  --age-old: #D70015;
+
+  /* Neutrals built on those. No new hues. */
+  --group: var(--bg);
+  --group-hover: #EDEDEF;
+  --chip: rgba(120, 120, 128, .12);
+  --hover: rgba(120, 120, 128, .08);
+  --toast-hover: rgba(120, 120, 128, .08);
+  --press: rgba(120, 120, 128, .16);
+  --age-warm-hover: #AB5B00; /* The amber misses 4.5:1 on the hover fill by a hair. */
+  --switch-off: rgba(120, 120, 128, .24);
+  --bar-glass: rgba(255, 255, 255, .78);
+  --elevated: #FFFFFF;
+  --shadow-card: 0 1px 2px rgba(0, 0, 0, .025), 0 4px 24px rgba(0, 0, 0, .025);
+  --shadow-float: 0 2px 6px rgba(0, 0, 0, .06), 0 12px 32px rgba(0, 0, 0, .12);
+  --shadow-sheet: 0 16px 48px rgba(0, 0, 0, .14);
+
+  --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --ease: cubic-bezier(.32, .72, 0, 1);
+
+  --gutter: 24px;
+  --tabbar-height: 50px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --accent-text: #FF6259;
+    --label: #F5F5F7;
+    --label-2: #98989D;
+    --label-3: #7C7C80;
+    --sep: rgba(255, 255, 255, .10);
+    --bg: #000000;
+    --card: #1C1C1E;
+    --age-warm: #FFB340;
+    --age-old: #FF6961;
+
+    --group: #2C2C2E;
+    --group-hover: #323235;
+    --chip: rgba(120, 120, 128, .32);
+    --hover: rgba(120, 120, 128, .18);
+    --toast-hover: rgba(0, 0, 0, .2); /* On the lighter toast a lighter fill would cost Undo its contrast. */
+    --press: rgba(120, 120, 128, .28);
+    --age-warm-hover: #FFB340;
+    --switch-off: rgba(120, 120, 128, .36);
+    --bar-glass: rgba(28, 28, 30, .78);
+    --elevated: #2C2C2E;
+    --shadow-card: none;
+    --shadow-float: none;
+    --shadow-sheet: 0 0 0 .5px var(--sep);
+  }
+}
+
+/* ---------- Base ---------- */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+[hidden] { display: none !important; }
+
+html {
+  height: 100%;
+  overscroll-behavior: none;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  background: var(--bg);
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--label);
+  font-family: var(--font);
+  font-size: 17px;
+  line-height: 1.35;
+  letter-spacing: -.022em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: transparent;
+}
+
+h1, h2, h3, p, ul { margin: 0; padding: 0; font: inherit; letter-spacing: inherit; }
+ul { list-style: none; }
+
+button {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+input, textarea { margin: 0; color: inherit; font: inherit; letter-spacing: inherit; caret-color: var(--accent-text); }
+
+:focus { outline: none; }
+:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 2px; }
+
+svg { display: block; }
+.stroke, .stroke-thin { fill: none; stroke: currentColor; stroke-linecap: round; stroke-linejoin: round; }
+.stroke { stroke-width: 2; }
+.stroke-thin { stroke-width: 1.75; }
+.fill { fill: currentColor; }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.noscript {
+  position: fixed;
+  inset: auto 0 0;
+  padding: 16px;
+  background: var(--card);
+  text-align: center;
+}
+
+/* ---------- Shared type and controls ---------- */
+
+.big-title {
+  min-height: 1.12em; /* Holds its place until the month is filled in. */
+  font-size: 34px;
+  line-height: 1.12;
+  font-weight: 700;
+  letter-spacing: -.012em;
+}
+.big-title .year { font-weight: 400; color: var(--label-2); }
+
+.section-title {
+  font-size: 17px;
+  line-height: 1.3;
+  font-weight: 600;
+  letter-spacing: -.022em;
+}
+
+/* Tracking follows Apple's own type scale: 17 px text at -0.022em, 13 to 15 px text looser at -0.016em, the 34 px
+   titles at -0.012em. An em letter-spacing is inherited as pixels, so the smaller text sets its own rather than
+   taking the body's, which would make it tighter than the body. */
+.saved-line, .menu-item, .notice, .agenda-empty, .agenda-row-time, .todo-count, .todo-empty-hint,
+.task-notes, .task-line, .quiet-btn, .swipe-delete, .toast { letter-spacing: -.016em; }
+
+.icon-btn {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  flex: none;
+  transition: background-color 200ms var(--ease);
+}
+.icon-btn svg { width: 22px; height: 22px; fill: currentColor; }
+.icon-btn svg .stroke { fill: none; }
+.icon-btn.tint { color: var(--accent-text); }
+
+.text-btn {
+  min-height: 36px;
+  padding: 0 10px;
+  border-radius: 10px;
+  color: var(--accent-text);
+  font-size: 17px;
+  transition: opacity 200ms var(--ease), background-color 200ms var(--ease), color 200ms var(--ease);
+}
+.text-btn.strong { font-weight: 600; }
+.text-btn:disabled { color: var(--label-2); cursor: default; } /* label-3 is only for placeholders and the empty circle. */
+
+.round-add {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  flex: none;
+  background: var(--accent-fill);
+  color: #FFFFFF;
+  transition: transform 200ms var(--ease), opacity 200ms var(--ease);
+}
+.round-add svg { width: 22px; height: 22px; }
+.round-add .stroke { stroke-width: 2.25; }
+.round-add:active { transform: scale(.92); }
+@media (hover: hover) { .round-add:hover { opacity: .88; } }
+
+/* Under the pointer everything gets the same grey fill. Accent text only reaches 4.25:1 on it in light mode, so red text
+   deepens to age-old, at 4.9:1. */
+@media (hover: hover) {
+  .icon-btn:hover { background: var(--hover); }
+  .text-btn:not(:disabled):hover { background: var(--hover); color: var(--age-old); }
+}
+.icon-btn:active { background: var(--press); }
+.text-btn:not(:disabled):active, .quiet-btn:active, .tab:active, .completed-toggle:active { opacity: .6; }
+
+/* ---------- Page layout: two cards, 1000 px and up ---------- */
+
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  width: 100%;
+  max-width: 1760px;
+  margin: 0 auto;
+}
+
+.topbar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  z-index: 2; /* So its hairline paints over the card below, not under it. */
+  height: calc(56px + var(--safe-top));
+  padding: var(--safe-top) max(14px, var(--safe-right)) 0 max(24px, var(--safe-left));
+  transition: box-shadow 200ms var(--ease);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -.022em;
+  white-space: nowrap;
+}
+.brand-mark { width: 22px; height: 22px; flex: none; }
+.brand-mark circle { fill: var(--accent-fill); }
+.brand-mark path { fill: none; stroke: #FFFFFF; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+.saved-line {
+  margin-left: auto;
+  font-size: 13px;
+  line-height: 1.25;
+  color: var(--label-2);
+  text-align: right;
+}
+
+.menu-anchor { position: relative; flex: none; }
+
+.menu {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + 6px);
+  right: 10px; /* The anchor reaches 10 px past the dots, so the menu ends where they do. */
+  width: 220px;
+  padding: 6px;
+  border-radius: 14px;
+  background: var(--elevated);
+  box-shadow: var(--shadow-float), 0 0 0 .5px var(--sep);
+  animation: menu-in 200ms var(--ease);
+  transform-origin: top right;
+}
+.menu-item {
+  display: block;
+  width: 100%;
+  padding: 9px 12px;
+  border-radius: 9px;
+  text-align: left;
+  font-size: 15px;
+  white-space: nowrap;
+}
+.menu-item:focus-visible { outline-offset: -2px; }
+@media (hover: hover) { .menu-item:hover { background: var(--hover); } }
+.menu-item:active { background: var(--press); }
+@keyframes menu-in { from { opacity: 0; transform: scale(.96); } to { opacity: 1; transform: none; } }
+
+.notices:empty { display: none; }
+.notices { flex: none; display: flex; flex-direction: column; gap: 8px; padding: 0 max(20px, var(--safe-right)) 12px max(20px, var(--safe-left)); }
+.notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 14px;
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+  font-size: 15px;
+}
+.notice-dismiss { flex: none; min-height: 28px; padding: 0 8px; border-radius: 8px; color: var(--accent-text); font-weight: 600; }
+@media (hover: hover) { .notice-dismiss:hover { background: var(--hover); color: var(--age-old); } }
+
+.layout {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 58fr) minmax(0, 42fr);
+  gap: 16px;
+  padding: 0 max(20px, var(--safe-right)) max(20px, var(--safe-bottom)) max(20px, var(--safe-left));
+}
+
+.card {
+  min-height: 0;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--card);
+  border-radius: 20px;
+  box-shadow: var(--shadow-card);
+}
+
+.scroller, .agenda-scroll, .sheet-body {
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+.screen-head {
+  flex: none;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 20px var(--gutter) 12px;
+  transition: box-shadow 200ms var(--ease);
+}
+
+/* A hairline appears under a header only once content is scrolling beneath it. */
+.is-scrolled-under { box-shadow: 0 .5px 0 0 var(--sep); }
+/* The month header only stays put in a short desktop window (below). Anywhere else it scrolls away with the grid, and
+   on phones the top bar carries the line. */
+.calendar-head.is-scrolled-under { box-shadow: none; }
+
+/* ---------- Calendar ---------- */
+
+.calendar-scroll {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-controls { display: flex; align-items: center; gap: 12px; flex: none; }
+.month-nav { display: flex; align-items: center; gap: 2px; }
+
+.grid {
+  flex: none;
+  padding-bottom: 8px;
+  /* The side inset belongs to the rows, not the grid, so a month sliding away runs all the way to the card's edge. */
+  --inset: calc(var(--gutter) - 8px);
+  /* The height left after the top bar, page margin, header, weekdays and this padding: a little under half goes to
+     the six rows and the rest to the agenda, so a full day shows without scrolling on an ordinary laptop. */
+  --row: clamp(42px, calc((100dvh - 182px - var(--safe-top)) * .46 / 6), 88px);
+  /* On short rows the disc gives way, so a day's dot stays closer to its own number than to the one below it. */
+  --disc: clamp(30px, calc(var(--row) - 16px), 38px);
+}
+
+.weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  height: 28px;
+  padding: 0 var(--inset);
+  align-items: center;
+}
+.weekday {
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--label-2);
+  letter-spacing: 0;
+}
+
+.days {
+  position: relative;
+  margin-top: -4px;
+  padding-top: 4px;
+  overflow: hidden;
+  touch-action: pan-y pinch-zoom;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+.days-pane { position: relative; min-height: calc(var(--row) * 6); }
+.days-ghost { position: absolute; top: 4px; right: 0; bottom: 0; left: 0; pointer-events: none; }
+
+.week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  height: var(--row);
+  padding: 0 var(--inset);
+}
+
+.day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 0;
+  cursor: pointer;
+}
+.day:focus-visible { outline: none; }
+.day:focus-visible .day-number { outline: 2px solid var(--accent-text); outline-offset: 1px; }
+.day:focus-visible .day-dot { transform: translateY(2px); } /* Clears the ring. */
+
+.day-number {
+  display: grid;
+  place-items: center;
+  width: var(--disc);
+  height: var(--disc);
+  border-radius: 50%;
+  font-size: 17px;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+.day-dot { width: 4px; height: 4px; flex: none; border-radius: 50%; }
+.has-event .day-dot { background: var(--label-2); }
+
+/* Adjacent-month days are tappable text, so they use label-2: label-3 fails AA on text (3.26:1 light, 4.09:1 dark).
+   Nothing in the grid uses label-3. */
+.is-adjacent .day-number { color: var(--label-2); }
+.is-today .day-number { color: var(--accent-text); font-weight: 600; }
+.is-selected .day-number { background: var(--label); color: var(--card); font-weight: 600; }
+.is-selected.is-today .day-number { background: var(--accent-fill); color: #FFFFFF; }
+
+@media (hover: hover) {
+  .day:not(.is-selected):hover .day-number { background: var(--hover); }
+}
+.day:not(.is-selected):active .day-number { background: var(--press); }
+
+.agenda {
+  flex: 1 1 0;
+  min-height: 196px;
+  display: flex;
+  flex-direction: column;
+  border-top: .5px solid var(--sep);
+}
+.agenda-title { flex: none; position: relative; z-index: 1; padding: 14px var(--gutter) 6px; transition: box-shadow 200ms var(--ease); }
+.agenda-scroll {
+  flex: 1;
+  min-height: 0;
+  padding: 0 calc(var(--gutter) - 12px) 12px;
+}
+.agenda-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  padding: 12px 0 24px;
+  color: var(--label-2);
+  font-size: 15px;
+  text-align: center;
+}
+
+.agenda-item { position: relative; margin: 0 calc((var(--gutter) - 12px) * -1); }
+.agenda-item .swipe-surface { display: block; padding: 0 calc(var(--gutter) - 12px); }
+.agenda-row {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  width: 100%;
+  padding: 6px 12px;
+  border-radius: 12px;
+  text-align: left;
+  transition: background-color 200ms var(--ease);
+}
+.agenda-row:focus-visible { outline-offset: -2px; }
+@media (hover: hover) { .agenda-row:hover { background: var(--hover); } }
+.agenda-row:active { background: var(--press); }
+.agenda-bar { flex: none; width: 3px; border-radius: 3px; background: var(--accent-text); }
+.agenda-row-text { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.agenda-row-title { font-size: 17px; overflow-wrap: anywhere; }
+.agenda-row-time { font-size: 14px; color: var(--label-2); }
+
+/* ---------- To-Do ---------- */
+
+.todo-heading { display: flex; align-items: baseline; gap: 10px; min-width: 0; }
+.todo-count { font-size: 15px; color: var(--label-2); white-space: nowrap; }
+
+.todo-scroll {
+  flex: 1;
+  min-height: 0;
+  padding: 0 var(--gutter) 24px;
+}
+
+.todo-empty {
+  padding: clamp(40px, 12vh, 112px) 0 28px;
+  text-align: center;
+}
+.todo-empty-hint { margin-top: 2px; font-size: 15px; color: var(--label-2); }
+
+.task { position: relative; margin: 0 calc(var(--gutter) * -1); }
+.task + .task .task-text::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 8px;
+  right: 12px;
+  border-top: .5px solid var(--sep);
+}
+
+.swipe-surface {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  padding: 0 var(--gutter);
+  background: var(--card);
+  touch-action: pan-y pinch-zoom;
+}
+@media (pointer: coarse) {
+  .swipe-surface { -webkit-user-select: none; user-select: none; -webkit-touch-callout: none; }
+}
+
+.check {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-left: -11px;
+  border-radius: 50%;
+}
+.check:focus-visible { outline-offset: -4px; }
+.check-circle { width: 22px; height: 22px; overflow: visible; transition: transform 200ms var(--ease); }
+.check:active .check-circle { transform: scale(.9); }
+.check-ring { fill: none; stroke: var(--label-3); stroke-width: 1.5; transition: stroke 200ms var(--ease); }
+@media (hover: hover) { .check:hover .check-ring { stroke: var(--accent-text); } }
+.check-fill { fill: var(--accent-fill); transform-origin: 11px 11px; transform: scale(0); opacity: 0; transition: transform 240ms var(--ease), opacity 200ms var(--ease); }
+.check-mark {
+  fill: none;
+  stroke: #FFFFFF;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 240ms var(--ease) 60ms;
+}
+.is-checked .check-fill { transform: scale(1); opacity: 1; }
+.is-checked .check-mark { stroke-dashoffset: 0; }
+.is-checked .check-ring { stroke: transparent; }
+
+/* Reaches a little past the words on both sides, under the circle's target and into the gutter, so its focus ring and
+   hover fill don't touch them. */
+.task-text {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin: 0 -12px 0 -7px;
+  padding: 10px 12px 11px 8px;
+  border-radius: 12px;
+  text-align: left;
+  transition: background-color 200ms var(--ease);
+}
+.task-text:focus-visible { outline-offset: -2px; }
+@media (hover: hover) {
+  .task-text:hover { background: var(--hover); }
+  .task-text:hover .age-warm { color: var(--age-warm-hover); }
+}
+.task-text:active { background: var(--press); }
+
+.task-title {
+  font-size: 17px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+  -webkit-text-decoration-line: line-through;
+  text-decoration-line: line-through;
+  -webkit-text-decoration-color: transparent;
+  text-decoration-color: transparent;
+  transition: color 200ms var(--ease), text-decoration-color 200ms var(--ease);
+}
+.is-checked .task-title {
+  color: var(--label-2);
+  -webkit-text-decoration-color: currentColor;
+  text-decoration-color: currentColor;
+}
+.task-notes {
+  margin-top: 1px;
+  font-size: 13px; /* Quieter than the age line under it, which is the point of the row. */
+  line-height: 1.3;
+  color: var(--label-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.task-line {
+  margin-top: 2px;
+  font-size: 14px;
+  line-height: 1.3;
+  color: var(--label-2);
+}
+.age-warm { color: var(--age-warm); font-weight: 500; }
+.age-old { color: var(--age-old); font-weight: 500; }
+
+.add-row {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  cursor: text;
+}
+/* The + is an icon, so label-2 like the iOS app's add bar (label-3 is only for the placeholder and the empty circle).
+   It takes the accent while the field has focus, which is the field's focus ring. */
+.add-glyph { flex: none; width: 22px; height: 22px; margin-right: 12px; color: var(--label-2); }
+.add-input {
+  flex: 1;
+  min-width: 0;
+  height: 44px;
+  padding: 0; /* So its words line up with the titles above. */
+  border: 0;
+  background: none;
+  font-size: 17px;
+  -webkit-appearance: none;
+  appearance: none;
+  border-radius: 8px;
+}
+.add-input::placeholder { color: var(--label-3); opacity: 1; }
+.add-input:focus-visible { outline: none; }
+.add-row:focus-within .add-glyph { color: var(--accent-text); }
+.add-row.after-rows .add-input { border-top: .5px solid var(--sep); border-radius: 0; }
+
+.completed { margin-top: 8px; }
+.completed-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  border-top: .5px solid var(--sep);
+}
+.completed-heading { min-width: 0; }
+/* The chevron sits in the column of the circles, and the words in the column of the titles. */
+.completed-toggle {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 44px;
+  margin-left: -11px;
+  padding: 0 8px 0 13px;
+  border-radius: 8px;
+  text-align: left;
+  transition: background-color 200ms var(--ease);
+}
+@media (hover: hover) { .completed-toggle:hover { background: var(--hover); } }
+.disclosure { width: 18px; height: 18px; flex: none; color: var(--label-2); transition: transform 280ms var(--ease); }
+.disclosure .stroke { stroke-width: 2.25; }
+.is-expanded .disclosure { transform: rotate(90deg); }
+.quiet-btn {
+  flex: none;
+  min-height: 44px;
+  margin-right: -8px; /* The word ends on the content's edge; its focus ring and hover fill reach past it. */
+  padding: 0 8px;
+  border-radius: 8px;
+  font-size: 15px;
+  color: var(--label-2);
+  transition: background-color 200ms var(--ease);
+}
+@media (hover: hover) { .quiet-btn:hover { background: var(--hover); color: var(--label); } }
+.task.is-animating, .agenda-item.is-animating { overflow: hidden; }
+.done-list.is-animating { margin: 0 calc(var(--gutter) * -1); padding: 0 var(--gutter); overflow: hidden; }
+
+/* ---------- Swipe to delete ---------- */
+
+.is-swiping { overflow: hidden; }
+.swipe-delete {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 21px;
+  background: var(--accent-fill);
+  color: #FFFFFF;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+/* ---------- Undo toast ---------- */
+
+.toast-region {
+  position: fixed;
+  z-index: 20;
+  left: 0;
+  right: 0;
+  bottom: max(28px, calc(var(--safe-bottom) + 12px));
+  display: flex;
+  justify-content: center;
+  padding: 0 16px;
+  pointer-events: none;
+}
+.toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 100%;
+  min-height: 44px;
+  padding: 0 8px 0 20px;
+  border-radius: 22px;
+  background: var(--elevated);
+  box-shadow: var(--shadow-float), 0 0 0 .5px var(--sep);
+  font-size: 15px;
+}
+.toast-message { min-width: 0; }
+.toast-undo {
+  flex: none;
+  min-height: 44px;
+  padding: 0 12px;
+  border-radius: 22px;
+  color: var(--accent-text);
+  font-weight: 700;
+  transition: background-color 200ms var(--ease);
+}
+.toast-undo:focus-visible { outline-offset: -6px; }
+@media (hover: hover) { .toast-undo:hover { background: var(--toast-hover); color: var(--age-old); } }
+
+/* ---------- Sheets ---------- */
+
+.sheet {
+  width: 440px;
+  max-width: calc(100vw - 32px);
+  max-height: min(calc(100vh - 48px), 760px);
+  max-height: min(calc(100dvh - 48px), 760px);
+  padding: 0;
+  border: 0;
+  border-radius: 20px;
+  background: var(--card);
+  color: var(--label);
+  box-shadow: var(--shadow-sheet);
+  overflow: hidden;
+}
+.sheet[open] {
+  display: flex;
+  flex-direction: column;
+  animation: sheet-in 300ms var(--ease);
+}
+.sheet.closing { pointer-events: none; animation: sheet-out 220ms var(--ease) forwards; }
+.sheet::backdrop {
+  background: rgba(0, 0, 0, .28);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  animation: backdrop-in 250ms ease;
+}
+.sheet.closing::backdrop { animation: backdrop-out 220ms ease forwards; }
+
+@keyframes sheet-in { from { opacity: 0; transform: translateY(28px) scale(.985); } to { opacity: 1; transform: none; } }
+@keyframes sheet-out { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateY(16px) scale(.99); } }
+@keyframes backdrop-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes backdrop-out { from { opacity: 1; } to { opacity: 0; } }
+
+.sheet-form { flex: 1; min-height: 0; display: flex; flex-direction: column; }
+
+.sheet-head {
+  flex: none;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 8px;
+  min-height: 56px;
+  padding: 0 6px;
+  border-bottom: .5px solid var(--sep);
+}
+.sheet-head .text-btn:first-child { justify-self: start; }
+.sheet-head .text-btn:last-child { justify-self: end; }
+.sheet-title { font-size: 17px; font-weight: 600; letter-spacing: -.022em; text-align: center; white-space: nowrap; }
+
+.sheet-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 16px;
+}
+
+.group { flex: none; border-radius: 12px; background: var(--group); }
+
+.field {
+  display: block;
+  width: 100%;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  font-size: 17px;
+  line-height: 1.3;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.field::placeholder { color: var(--label-3); opacity: 1; }
+/* The caret shows where focus is, as in iOS. The transparent outline is what forced-colours mode draws. */
+.field:focus-visible { outline: 2px solid transparent; outline-offset: -2px; }
+textarea.field { min-height: 92px; max-height: 40vh; resize: none; field-sizing: content; }
+
+.row {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 12px;
+  min-height: 48px;
+  padding: 7px 12px 7px 16px;
+}
+.row + .row::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 16px;
+  right: 0;
+  border-top: .5px solid var(--sep);
+}
+.row-label { font-size: 17px; }
+
+.switch { position: relative; display: block; flex: none; width: 51px; height: 31px; }
+.switch input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.switch-track {
+  position: absolute;
+  inset: 0;
+  border-radius: 31px;
+  background: var(--switch-off);
+  pointer-events: none;
+  transition: background-color 250ms var(--ease);
+}
+.switch-track::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 27px;
+  height: 27px;
+  border-radius: 50%;
+  background: #FFFFFF;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, .15), 0 1px 1px rgba(0, 0, 0, .16);
+  transition: transform 250ms var(--ease);
+}
+.switch input:checked + .switch-track { background: var(--accent-fill); }
+.switch input:checked + .switch-track::before { transform: translateX(20px); }
+.switch input:focus-visible + .switch-track { outline: 2px solid var(--accent-text); outline-offset: 2px; }
+
+.date-time { display: flex; align-items: center; justify-content: flex-end; gap: 6px; margin-left: auto; min-width: 0; }
+
+.date-time input {
+  position: relative;
+  flex: 0 1 auto;
+  min-width: 0;
+  height: 34px;
+  margin: 0;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--chip);
+  color: var(--label);
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 34px;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  accent-color: var(--accent-fill);
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+.date-time input[type="date"] { width: 124px; }
+.date-time input[type="time"] { width: 100px; }
+.date-time input[aria-invalid="true"] { color: var(--age-old); }
+/* Grey, because Chrome paints the focused segment blue and a red ring beside it clashes. label-2 keeps it at 3:1. */
+.date-time input:focus-visible { outline: 2px solid var(--label-2); outline-offset: 1px; }
+
+/* The whole chip opens the picker, as a compact date picker does on iOS. Tabbing in still types. */
+.date-time input::-webkit-calendar-picker-indicator {
+  position: absolute;
+  inset: 0;
+  width: auto;
+  height: auto;
+  margin: 0;
+  padding: 0;
+  background: none;
+  opacity: 0;
+  cursor: pointer;
+}
+.date-time input::-webkit-datetime-edit { justify-content: center; padding: 0; }
+.date-time input::-webkit-datetime-edit-fields-wrapper { justify-content: center; }
+/* iOS Safari draws the value in this. */
+.date-time input::-webkit-date-and-time-value { min-height: 1.3em; margin: 0; text-align: center; }
+/* Firefox keeps its own calendar icon inside the field, so its date chip needs room for it. */
+@supports (-moz-appearance: none) {
+  .date-time input[type="date"] { width: 140px; }
+}
+
+.danger-btn {
+  flex: none;
+  width: 100%;
+  min-height: 48px;
+  border-radius: 12px;
+  background: var(--group);
+  color: var(--age-old); /* Accent text only reaches 4.29:1 on the group. */
+  font-size: 17px;
+  text-align: center;
+  transition: background-color 200ms var(--ease);
+}
+@media (hover: hover) { .danger-btn:hover { background: var(--group-hover); } }
+.danger-btn:active { background: var(--group-hover); }
+
+/* ---------- Alert ---------- */
+
+.alert {
+  width: 320px;
+  max-width: calc(100vw - 48px);
+  padding: 0;
+  border: 0;
+  border-radius: 16px;
+  background: var(--card);
+  color: var(--label);
+  box-shadow: var(--shadow-sheet);
+  overflow: hidden;
+  text-align: center;
+}
+.alert[open] { animation: alert-in 250ms var(--ease); }
+.alert::backdrop {
+  background: rgba(0, 0, 0, .28);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  animation: backdrop-in 200ms ease;
+}
+@keyframes alert-in { from { opacity: 0; transform: scale(1.04); } to { opacity: 1; transform: none; } }
+
+.alert-message { padding: 20px 20px 18px; font-size: 16px; line-height: 1.35; font-weight: 500; }
+.alert-actions { display: flex; border-top: .5px solid var(--sep); }
+.alert-btn { flex: 1; min-height: 46px; color: var(--accent-text); font-size: 17px; }
+.alert-btn + .alert-btn { border-left: .5px solid var(--sep); }
+.alert-btn.strong { font-weight: 600; }
+.alert-btn:focus-visible { outline-offset: -4px; border-radius: 8px; }
+@media (hover: hover) { .alert-btn:hover { background: var(--hover); color: var(--age-old); } }
+
+/* ---------- Bottom tab bar ---------- */
+
+.tabbar { display: none; }
+
+@media (min-width: 1000px) {
+  .topbar.is-scrolled-under { box-shadow: none; }
+
+  /* The mark sits on the month title's edge, and the menu's dots on the right edge of the + below them. */
+  .topbar {
+    padding-left: max(43px, var(--safe-left));
+    padding-right: max(34px, var(--safe-right));
+  }
+
+  /* Content leaving a card fades out instead of being sliced through, which also says there's more. The padding at
+     the end of each scroller is deeper than the fade, so the last row is whole once it's scrolled up. */
+  .agenda-scroll, .todo-scroll {
+    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 20px), transparent);
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 20px), transparent);
+  }
+  .agenda-scroll { padding-bottom: 24px; }
+
+  /* The toast sits on the card it's about, not across the gap between the two. These match .layout's columns. */
+  .toast-region {
+    bottom: 36px;
+    right: auto;
+    left: max(20px, calc((100vw - 1760px) / 2 + 20px));
+    width: calc((min(100vw, 1760px) - 56px) * .58);
+  }
+  .toast-region[data-side="todo"] {
+    left: auto;
+    right: max(20px, calc((100vw - 1760px) / 2 + 20px));
+    width: calc((min(100vw, 1760px) - 56px) * .42);
+  }
+}
+
+/* A short window: two scrollers would fight inside one card, so the whole card scrolls, under a header that stays. */
+@media (min-width: 1000px) and (max-height: 660px) {
+  .agenda { flex: none; min-height: 0; }
+  .agenda-scroll { overflow: visible; -webkit-mask-image: none; mask-image: none; }
+  .agenda-empty { min-height: 64px; }
+  .calendar-head { position: sticky; top: 0; z-index: 2; background: var(--card); }
+  .calendar-head.is-scrolled-under { box-shadow: 0 .5px 0 0 var(--sep); }
+  .calendar-scroll {
+    -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 20px), transparent);
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 20px), transparent);
+  }
+}
+
+/* A big screen: the calendar grows into it, and an empty day says so near its heading. */
+@media (min-width: 1500px) and (min-height: 950px) {
+  .grid { --row: clamp(46px, calc((100dvh - 182px) * .52 / 6), 96px); --disc: 42px; }
+  .day-number { font-size: 19px; }
+  .agenda-empty { min-height: 0; padding: 48px 0; }
+}
+
+/* Touch on anything bigger than a phone: the targets a phone gets, with the dots and the + still lined up. */
+@media (pointer: coarse) and (min-width: 600px) {
+  .icon-btn { width: 44px; height: 44px; }
+  .text-btn { min-height: 44px; }
+  .menu-anchor { margin-right: -4px; }
+  .menu { right: 14px; }
+  .round-add { position: relative; }
+  .round-add::after { content: ""; position: absolute; inset: -4px; }
+}
+
+/* ---------- Below 1000 px: one screen at a time ---------- */
+
+@media (max-width: 999.98px) {
+  html, body { background: var(--card); }
+
+  .app { max-width: none; position: relative; }
+
+  /* Insets add to the gutter here, as they do on the full-bleed card below, so the two share an edge beside a notch. */
+  .topbar {
+    height: calc(48px + var(--safe-top));
+    padding: var(--safe-top) calc(14px + var(--safe-right)) 0 calc(var(--gutter) + var(--safe-left));
+    gap: 10px;
+  }
+
+  .notices { padding: 4px calc(var(--gutter) + var(--safe-right)) 8px calc(var(--gutter) + var(--safe-left)); }
+  .notice { box-shadow: inset 0 0 0 .5px var(--sep); }
+
+  .layout { display: block; padding: 0; position: relative; }
+
+  .card {
+    height: 100%;
+    padding-left: var(--safe-left);
+    padding-right: var(--safe-right);
+    border-radius: 0;
+    box-shadow: none;
+  }
+  .screen:not(.is-active) { display: none; }
+
+  .screen-head { padding-top: 6px; }
+
+  .calendar-scroll, .todo-scroll {
+    padding-bottom: calc(var(--tabbar-height) + var(--safe-bottom) + 32px);
+    scroll-padding-bottom: calc(var(--tabbar-height) + var(--safe-bottom) + 32px);
+  }
+
+  .grid { --row: clamp(44px, min(12.8vw, 9vh), 88px); }
+
+  .agenda { flex: none; min-height: 0; }
+  .agenda-scroll { overflow: visible; }
+  .agenda-empty { min-height: 64px; padding: 12px 0; }
+
+  .tabbar {
+    position: fixed;
+    z-index: 10;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    height: calc(var(--tabbar-height) + var(--safe-bottom));
+    padding: 0 var(--safe-right) var(--safe-bottom) var(--safe-left);
+    background: var(--bar-glass);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+    box-shadow: 0 -.5px 0 0 var(--sep);
+  }
+  .tab {
+    position: relative;
+    flex: 1 1 0;
+    max-width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1px;
+    color: var(--label-2);
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: .01em;
+  }
+  .tab svg { width: 26px; height: 26px; }
+  .tab[aria-current="page"] { color: var(--accent-text); }
+  .tab:focus-visible { outline-offset: -4px; border-radius: 10px; }
+  .tab-badge {
+    position: absolute;
+    top: 2px;
+    left: calc(50% + 8px);
+    box-shadow: 0 0 0 2px var(--card); /* So it doesn't run into a red icon. */
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 9px;
+    background: var(--accent-fill);
+    color: #FFFFFF;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 18px;
+    text-align: center;
+    letter-spacing: 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .toast-region { bottom: calc(var(--tabbar-height) + var(--safe-bottom) + 12px); }
+}
+
+/* ---------- Phones ---------- */
+
+@media (max-width: 599.98px) {
+  :root { --gutter: 16px; }
+
+  .topbar { padding-right: calc(2px + var(--safe-right)); }
+  .saved-line span { display: block; }
+  .menu { right: 14px; }
+
+  .calendar-head { flex-wrap: wrap; gap: 2px 12px; padding-bottom: 4px; }
+  .calendar-head .big-title { width: 100%; }
+  .calendar-controls { width: 100%; justify-content: space-between; }
+
+  .icon-btn { width: 44px; height: 44px; }
+  .text-btn { min-height: 44px; }
+  /* The chevron's own edge lines up with the title above it. */
+  .month-nav { margin-left: -16px; gap: 0; }
+  .month-nav .icon-btn { width: 40px; border-radius: 14px; }
+  .month-nav .text-btn { padding: 0 6px; }
+  .round-add { position: relative; }
+  .round-add::after { content: ""; position: absolute; inset: -4px; }
+
+  /* Sheets come up from the bottom. */
+  .sheet {
+    width: 100%;
+    max-width: 100%;
+    max-height: calc(100vh - 12px);
+    max-height: calc(100dvh - max(12px, var(--safe-top)));
+    margin: auto 0 0;
+    border-radius: 16px 16px 0 0;
+    padding-bottom: var(--safe-bottom);
+  }
+  .sheet[open] { animation-name: sheet-up; }
+  .sheet.closing { animation-name: sheet-down; }
+
+  .date-time input[type="date"] { width: 118px; }
+  .date-time input[type="time"] { width: 96px; }
+}
+
+/* The + sits beside the title, where the To-Do screen has it, so it stays put when switching tabs. On the smallest
+   phones a long month needs the whole line. */
+@media (min-width: 340px) and (max-width: 599.98px) {
+  .calendar-head .big-title { width: auto; flex: 1 1 0; min-width: 0; order: 1; }
+  .calendar-controls { display: contents; }
+  #new-event { order: 2; }
+  .month-nav { order: 3; width: 100%; }
+}
+
+/* The smallest phones: everything still on one line, and room for the agenda to show. */
+@media (max-width: 359.98px) {
+  .sheet-body { padding: 12px; gap: 12px; }
+  .row { gap: 6px 8px; padding-left: 14px; padding-right: 6px; }
+  .row + .row::before { left: 14px; }
+  .field { padding-left: 14px; padding-right: 14px; }
+  .date-time { gap: 4px; }
+  .date-time input { padding: 0 4px; }
+  .date-time input[type="date"] { width: 104px; }
+  .date-time input[type="time"] { width: 88px; }
+}
+
+@media (max-width: 999.98px) and (max-height: 619.98px) {
+  .topbar { height: calc(44px + var(--safe-top)); }
+  .screen-head { padding-top: 0; }
+  .weekdays { height: 22px; }
+  .grid { padding-bottom: 4px; }
+  .agenda-title { padding-top: 10px; padding-bottom: 4px; }
+  .agenda-empty { min-height: 40px; padding: 4px 0; }
+}
+
+@keyframes sheet-up { from { transform: translateY(100%); } to { transform: none; } }
+@keyframes sheet-down { from { transform: none; } to { transform: translateY(100%); } }
+
+/* ---------- Without glass ---------- */
+
+@media (prefers-reduced-transparency: reduce) {
+  .tabbar { background: var(--card); -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .tabbar { background: var(--card); }
+}
+
+/* ---------- Reduce Motion ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after, ::backdrop {
+    animation-duration: .01ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: .01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ---------- Forced colours keep the states that are otherwise only fills ---------- */
+
+@media (forced-colors: active) {
+  .is-selected .day-number { outline: 2px solid Highlight; }
+  .has-event .day-dot { background: CanvasText; }
+  .check-fill { fill: Highlight; }
+  .switch-track { border: 1px solid CanvasText; }
+  .switch input:checked + .switch-track { background: Highlight; }
+  .switch-track::before { background: CanvasText; }
+}

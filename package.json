@@ -1,0 +1,23 @@
+{
+  "name": "daybook-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Daybook website: a calendar and a to-do list. The site is plain files in docs/; this package only holds the tests.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node test/run-all.mjs",
+    "test:unit": "node --test \"test/unit/*.test.mjs\"",
+    "test:e2e": "node --test --test-concurrency=2 \"test/e2e/*.test.mjs\"",
+    "screenshots": "node test/screenshots.mjs",
+    "screens": "node test/make-screens.mjs",
+    "og": "node test/make-og.mjs",
+    "serve": "node test/serve.mjs"
+  },
+  "devDependencies": {
+    "axe-core": "^4.10.0",
+    "playwright-core": "^1.50.0"
+  }
+}

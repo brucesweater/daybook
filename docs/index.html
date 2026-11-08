@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; manifest-src 'self'; worker-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'">
+  <meta name="referrer" content="no-referrer">
+  <meta name="format-detection" content="telephone=no">
+  <title>Daybook</title>
+  <meta name="description" content="A calendar and a to-do list, nothing else. Every task shows how long it has been waiting. Saved in your browser, never uploaded.">
+  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" media="(prefers-color-scheme: light) and (min-width: 1000px)" content="#F5F5F7">
+  <meta name="theme-color" media="(prefers-color-scheme: light) and (max-width: 999.98px)" content="#FFFFFF">
+  <meta name="theme-color" media="(prefers-color-scheme: dark) and (min-width: 1000px)" content="#000000">
+  <meta name="theme-color" media="(prefers-color-scheme: dark) and (max-width: 999.98px)" content="#1C1C1E">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="icons/icon-192.png" type="image/png" sizes="192x192">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Daybook">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Daybook">
+  <meta property="og:title" content="Daybook">
+  <meta property="og:description" content="A calendar and a to-do list, nothing else. Every task shows how long it has been waiting.">
+  <meta property="og:url" content="https://brucesweater.github.io/daybook/">
+  <meta property="og:image" content="https://brucesweater.github.io/daybook/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Daybook showing a month calendar beside a to-do list where each task says how long ago it was assigned.">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="js/app.js"></script>
+  <link rel="modulepreload" href="js/app.js">
+  <link rel="modulepreload" href="js/backup.js">
+  <link rel="modulepreload" href="js/calendar-day.js">
+  <link rel="modulepreload" href="js/calendar-state.js">
+  <link rel="modulepreload" href="js/calendar-view.js">
+  <link rel="modulepreload" href="js/demo.js">
+  <link rel="modulepreload" href="js/dialogs.js">
+  <link rel="modulepreload" href="js/dom.js">
+  <link rel="modulepreload" href="js/event-editor.js">
+  <link rel="modulepreload" href="js/events.js">
+  <link rel="modulepreload" href="js/format.js">
+  <link rel="modulepreload" href="js/gesture.js">
+  <link rel="modulepreload" href="js/grid.js">
+  <link rel="modulepreload" href="js/motion.js">
+  <link rel="modulepreload" href="js/notices.js">
+  <link rel="modulepreload" href="js/schema.js">
+  <link rel="modulepreload" href="js/sheet.js">
+  <link rel="modulepreload" href="js/store.js">
+  <link rel="modulepreload" href="js/swipe.js">
+  <link rel="modulepreload" href="js/task-editor.js">
+  <link rel="modulepreload" href="js/tasks.js">
+  <link rel="modulepreload" href="js/toast.js">
+  <link rel="modulepreload" href="js/todo-view.js">
+  <link rel="modulepreload" href="js/wording.js">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <h1 class="brand">
+        <svg class="brand-mark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <circle cx="12" cy="12" r="11"/>
+          <path d="M6.9 12.4l3.6 3.6 6.6-7.6"/>
+        </svg>
+        Daybook
+      </h1>
+      <p class="saved-line"><span>Saved in this browser.</span> <span>Nothing is uploaded.</span></p>
+      <div class="menu-anchor">
+        <button id="menu-button" class="icon-btn" type="button" title="Backup" aria-label="Backup" aria-haspopup="menu" aria-expanded="false" aria-controls="menu">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="5.5" cy="12" r="1.75"/><circle cx="12" cy="12" r="1.75"/><circle cx="18.5" cy="12" r="1.75"/></svg>
+        </button>
+        <div id="menu" class="menu" role="menu" aria-label="Backup" hidden>
+          <button id="menu-export" class="menu-item" type="button" role="menuitem" tabindex="-1">Export Backup…</button>
+          <button id="menu-import" class="menu-item" type="button" role="menuitem" tabindex="-1">Import Backup…</button>
+        </div>
+        <input id="import-file" class="visually-hidden" type="file" accept=".json,application/json" tabindex="-1" aria-hidden="true">
+      </div>
+    </header>
+
+    <div id="notices" class="notices" role="status" aria-live="polite"></div>
+
+    <main class="layout">
+      <section id="calendar" class="card screen is-active" aria-labelledby="month-title">
+        <div id="calendar-scroll" class="calendar-scroll scroller">
+          <header class="screen-head calendar-head">
+            <h2 id="month-title" class="big-title" aria-live="polite"><span id="month-name"></span> <span id="month-year" class="year"></span></h2>
+            <div class="calendar-controls">
+              <div class="month-nav">
+                <button id="prev-month" class="icon-btn tint" type="button" title="Previous month" aria-label="Previous month">
+                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="stroke" d="M14.5 5.5L8 12l6.5 6.5"/></svg>
+                </button>
+                <button id="go-today" class="text-btn" type="button">Today</button>
+                <button id="next-month" class="icon-btn tint" type="button" title="Next month" aria-label="Next month">
+                  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="stroke" d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+                </button>
+              </div>
+              <button id="new-event" class="round-add" type="button" title="New event" aria-label="New event">
+                <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="stroke" d="M12 5.5v13M5.5 12h13"/></svg>
+              </button>
+            </div>
+          </header>
+
+          <div id="grid" class="grid" role="grid" aria-labelledby="month-title">
+            <div id="weekdays" class="weekdays" role="row"></div>
+            <div id="days" class="days"><div id="days-pane" class="days-pane"></div></div>
+          </div>
+
+          <section class="agenda" aria-labelledby="agenda-title">
+            <h3 id="agenda-title" class="section-title agenda-title"></h3>
+            <div class="agenda-scroll">
+              <p id="agenda-empty" class="agenda-empty" hidden>No events</p>
+              <ul id="agenda-list" class="agenda-list" role="list"></ul>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section id="todo" class="card screen" aria-labelledby="todo-title">
+        <header class="screen-head todo-head">
+          <div class="todo-heading">
+            <h2 id="todo-title" class="big-title">To-Do</h2>
+            <span id="todo-count" class="todo-count"></span>
+          </div>
+          <button id="focus-add" class="round-add" type="button" title="Add a task" aria-label="Add a task">
+            <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="stroke" d="M12 5.5v13M5.5 12h13"/></svg>
+          </button>
+        </header>
+        <div id="todo-scroll" class="todo-scroll scroller">
+          <div id="todo-empty" class="todo-empty" hidden>
+            <p class="section-title">Nothing to do</p>
+            <p class="todo-empty-hint">Add a task below.</p>
+          </div>
+          <ul id="open-list" class="task-list" role="list"></ul>
+          <form id="add-form" class="add-row" novalidate autocomplete="off">
+            <svg class="add-glyph" viewBox="0 0 22 22" aria-hidden="true" focusable="false"><path class="stroke" d="M11 5v12M5 11h12"/></svg>
+            <input id="add-input" class="add-input" type="text" placeholder="Add a task" aria-label="Add a task" autocomplete="off" autocapitalize="sentences" enterkeyhint="enter">
+          </form>
+          <section id="completed" class="completed" aria-labelledby="completed-toggle" hidden>
+            <div class="completed-head">
+              <h3 class="completed-heading">
+                <button id="completed-toggle" class="completed-toggle section-title" type="button" aria-expanded="false" aria-controls="done-list">
+                  <svg class="disclosure" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path class="stroke" d="M9.5 5.5L16 12l-6.5 6.5"/></svg>
+                  <span id="completed-label"></span>
+                </button>
+              </h3>
+              <button id="clear-completed" class="quiet-btn" type="button">Clear</button>
+            </div>
+            <ul id="done-list" class="task-list done-list" role="list" hidden></ul>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <nav class="tabbar" aria-label="Screens">
+      <button id="tab-calendar" class="tab" type="button" data-screen="calendar" aria-current="page">
+        <svg viewBox="0 0 28 28" aria-hidden="true" focusable="false">
+          <rect class="stroke-thin" x="4" y="5.5" width="20" height="18.5" rx="4"/>
+          <path class="stroke-thin" d="M4 11h20M9.5 3v4.5M18.5 3v4.5"/>
+          <circle class="fill" cx="9.5" cy="15.5" r="1.25"/><circle class="fill" cx="14" cy="15.5" r="1.25"/><circle class="fill" cx="18.5" cy="15.5" r="1.25"/>
+          <circle class="fill" cx="9.5" cy="20" r="1.25"/><circle class="fill" cx="14" cy="20" r="1.25"/>
+        </svg>
+        <span>Calendar</span>
+      </button>
+      <button id="tab-todo" class="tab" type="button" data-screen="todo">
+        <svg viewBox="0 0 28 28" aria-hidden="true" focusable="false">
+          <path class="stroke-thin" d="M4 7.5l2.25 2.25L10 5.5M4 18.5l2.25 2.25L10 16.5M14 8h10M14 19h10"/>
+        </svg>
+        <span>To-Do</span>
+        <span id="todo-badge" class="tab-badge" aria-hidden="true" hidden></span>
+      </button>
+    </nav>
+  </div>
+
+  <div id="toast-region" class="toast-region" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <dialog id="event-sheet" class="sheet" aria-labelledby="event-sheet-title">
+    <form id="event-form" class="sheet-form" novalidate autocomplete="off">
+      <div class="sheet-head">
+        <button class="text-btn" type="button" data-cancel>Cancel</button>
+        <h2 id="event-sheet-title" class="sheet-title">New Event</h2>
+        <button id="event-submit" class="text-btn strong" type="submit" disabled>Add</button>
+      </div>
+      <div class="sheet-body">
+        <div class="group">
+          <input id="event-title" class="field" type="text" placeholder="Title" aria-label="Title" autocomplete="off" autocapitalize="sentences" enterkeyhint="done">
+        </div>
+        <div class="group">
+          <label class="row" for="event-all-day">
+            <span class="row-label">All-day</span>
+            <span class="switch">
+              <input id="event-all-day" type="checkbox" role="switch">
+              <span class="switch-track" aria-hidden="true"></span>
+            </span>
+          </label>
+          <div class="row">
+            <span class="row-label">Starts</span>
+            <span class="date-time">
+              <input id="event-start-date" type="date" max="9999-11-30" aria-label="Start date" required>
+              <input id="event-start-time" type="time" aria-label="Start time" required>
+            </span>
+          </div>
+          <div class="row">
+            <span class="row-label">Ends</span>
+            <span class="date-time">
+              <input id="event-end-date" type="date" max="9999-11-30" aria-label="End date" required>
+              <input id="event-end-time" type="time" aria-label="End time" required>
+            </span>
+          </div>
+        </div>
+        <div class="group">
+          <textarea id="event-notes" class="field" rows="3" placeholder="Notes" aria-label="Notes"></textarea>
+        </div>
+        <button id="event-delete" class="danger-btn" type="button" hidden>Delete Event</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="task-sheet" class="sheet" aria-labelledby="task-sheet-title">
+    <form id="task-form" class="sheet-form" novalidate autocomplete="off">
+      <div class="sheet-head">
+        <button class="text-btn" type="button" data-cancel>Cancel</button>
+        <h2 id="task-sheet-title" class="sheet-title">Edit Task</h2>
+        <button id="task-submit" class="text-btn strong" type="submit">Save</button>
+      </div>
+      <div class="sheet-body">
+        <div class="group">
+          <input id="task-title" class="field" type="text" placeholder="Title" aria-label="Title" autocomplete="off" autocapitalize="sentences" enterkeyhint="done">
+        </div>
+        <div class="group">
+          <textarea id="task-notes" class="field" rows="3" placeholder="Notes" aria-label="Notes"></textarea>
+        </div>
+        <div class="group">
+          <div class="row">
+            <span class="row-label">Assigned</span>
+            <span class="date-time">
+              <input id="task-date" type="date" aria-label="Assigned date" required>
+              <input id="task-time" type="time" aria-label="Assigned time" required>
+            </span>
+          </div>
+        </div>
+        <button id="task-delete" class="danger-btn" type="button">Delete Task</button>
+      </div>
+    </form>
+  </dialog>
+
+  <dialog id="alert" class="alert" role="alertdialog" aria-labelledby="alert-message">
+    <p id="alert-message" class="alert-message"></p>
+    <div class="alert-actions">
+      <button id="alert-cancel" class="alert-btn" type="button">Cancel</button>
+      <button id="alert-confirm" class="alert-btn strong" type="button">OK</button>
+    </div>
+  </dialog>
+
+  <template id="agenda-row-template">
+    <li class="agenda-item">
+      <div class="swipe-surface">
+        <button class="agenda-row" type="button">
+          <span class="agenda-bar"></span>
+          <span class="agenda-row-text">
+            <span class="agenda-row-title"></span>
+            <span class="agenda-row-time"></span>
+          </span>
+        </button>
+      </div>
+    </li>
+  </template>
+
+  <template id="task-row-template">
+    <li class="task">
+      <div class="swipe-surface">
+        <button class="check" type="button">
+          <svg class="check-circle" viewBox="0 0 22 22" aria-hidden="true" focusable="false">
+            <circle class="check-ring" cx="11" cy="11" r="10.25"/>
+            <circle class="check-fill" cx="11" cy="11" r="11"/>
+            <path class="check-mark" d="M6.4 11.4l3.1 3.1 6.1-6.9" pathLength="1"/>
+          </svg>
+        </button>
+        <button class="task-text" type="button">
+          <span class="task-title"></span>
+          <span class="task-notes"></span>
+          <span class="task-line"></span>
+        </button>
+      </div>
+    </li>
+  </template>
+
+  <noscript><p class="noscript">Daybook needs JavaScript to run.</p></noscript>
+</body>
+</html>
